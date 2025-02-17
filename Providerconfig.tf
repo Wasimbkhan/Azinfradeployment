@@ -13,9 +13,9 @@ provider "azurerm" {
 
 terraform {
    backend "azurerm" {
-     resource_group_name = "rgtfstaebackend"
-     storage_account_name = "mycompanystgone"
-     container_name = "mystgcontainer"
-     key = "terraform.tfstate"
+     #resource_group_name = "rgtfstaebackend"
+     #storage_account_name = "mycompanystgone"
+     #container_name = "mystgcontainer"
+     #key = "terraform.tfstate"
    }
 }
