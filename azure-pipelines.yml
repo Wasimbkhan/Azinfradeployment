@@ -34,8 +34,8 @@ steps:
     ensureBackend: true
     backendAzureRmResourceGroupName: 'rgtfstatebackend'
     backendAzureRmResourceGroupLocation: 'East US'
-    backendAzureRmStorageAccountName: 'mybackendsg_one'
-    backendAzureRmContainerName: 'mybackendsg_container_one'
+    backendAzureRmStorageAccountName: 'mybackendsg1'
+    backendAzureRmContainerName: 'mybackendsgcontainer1'
     backendAzureRmKey: 'backend_terraform.tfstate'
     allowTelemetryCollection: true
 
