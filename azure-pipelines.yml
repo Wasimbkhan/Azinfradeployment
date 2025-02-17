@@ -43,6 +43,7 @@ steps:
   name: plan
   inputs:
    command: 'plan'
+   
 
 - task: TerraformCLI@2
   name: apply
