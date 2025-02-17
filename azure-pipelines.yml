@@ -28,7 +28,7 @@ steps:
   name: Init
   inputs:
     command: 'init'
-    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+    #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
     backendType: 'azurerm'
     backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
     ensureBackend: true
@@ -43,6 +43,12 @@ steps:
   name: plan
   inputs:
    command: 'plan'
+
+- task: TerraformCLI@2
+  name: apply
+  inputs:
+    command: 'apply'
+    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
 
 
 - script: |
