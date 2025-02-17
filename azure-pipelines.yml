@@ -43,6 +43,7 @@ steps:
   name: Plan
   inputs:
    command: 'plan'
+   commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
 
 - task: TerraformCLI@2
   name: apply
