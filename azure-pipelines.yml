@@ -40,10 +40,9 @@ steps:
     allowTelemetryCollection: true
 
 - task: TerraformCLI@2
-  name: plan
+  name: Plan
   inputs:
    command: 'plan'
-   
 
 - task: TerraformCLI@2
   name: apply
