@@ -10,8 +10,14 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
+- script: echo My Azure infra deployment pipeline
   displayName: 'Run a one-line script'
+
+- task: DownloadSecureFile@1
+  name: publickey
+  inputs:
+    secureFile: 'azadm_rsa.pub'
+
 - task: TerraformCLI@2
   name: version
   inputs:
@@ -19,22 +25,25 @@ steps:
     allowTelemetryCollection: true
 
 - task: TerraformCLI@2
-  name: init
+  name: Init
   inputs:
     command: 'init'
+    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
     backendType: 'azurerm'
     backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+    ensureBackend: true
+    backendAzureRmResourceGroupName: 'rgtfstatebackend'
+    backendAzureRmResourceGroupLocation: 'East US'
+    backendAzureRmStorageAccountName: 'mybackendsg1'
+    backendAzureRmContainerName: 'mybackendsgcontainer1'
+    backendAzureRmKey: 'backend_terraform.tfstate'
     allowTelemetryCollection: true
 
 - task: TerraformCLI@2
-  name: validate
+  name: plan
   inputs:
-    command: 'validate'
-    
-- task: TerraformCLI@2
-  name: Plan
-  inputs:
-    command: 'plan'
+   command: 'plan'
+
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
