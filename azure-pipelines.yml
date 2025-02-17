@@ -40,10 +40,11 @@ steps:
     allowTelemetryCollection: true
 
 - task: TerraformCLI@2
-  name: plan
   inputs:
-   command: 'plan'
-
+    command: 'plan'
+    allowTelemetryCollection: true
+    publishPlanResults: 'infra drift'
+    
 - task: TerraformCLI@2
   name: apply
   inputs:
