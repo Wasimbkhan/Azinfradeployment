@@ -39,6 +39,11 @@ steps:
     backendAzureRmKey: 'backend_terraform.tfstate'
     allowTelemetryCollection: true
 
+- task: TerraformCLI@2
+  name: plan
+  inputs:
+   command: 'plan'
+
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
