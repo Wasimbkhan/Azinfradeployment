@@ -72,7 +72,7 @@ stages:
 
     - stage: Terraform_Apply
       displayName: "Terraform Apply"
-      dependsOn: Terraform_Plan
+      dependsOn: Terraform_Init
       condition: succeeded()  # Runs only if the plan stage succeeds
       jobs:
         - deployment: ApplyTerraform
