@@ -103,7 +103,7 @@ stages:
                       displayName: "Download Terraform Plan"
                       inputs:
                         artifact: "terraform_plan"
-                        path: "$(System.DefaultWorkingDirectory)/tfplan"
+                        path: "$(System.DefaultWorkingDirectory)"
                     
 
                     - task: TerraformCLI@2
