@@ -78,13 +78,13 @@ stages:
               inputs:
                 command: 'plan'
                 environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
                 allowTelemetryCollection: true
 
             - task: PublishPipelineArtifact@1
               displayName: "Save Terraform Plan"
               inputs:
-                targetPath: "$(Build.SourcesDirectory)/tfplan"
+                targetPath: "$(System.DefaultWorkingDirectory)/tfplan"
                 artifact: "terraform_plan"
 
 
@@ -103,7 +103,7 @@ stages:
                       displayName: "Download Terraform Plan"
                       inputs:
                         artifact: "terraform_plan"
-                        path: "$(Build.SourcesDirectory)/tfplan"
+                        path: "$(System.DefaultWorkingDirectory)/tfplan"
                     
 
                     - task: TerraformCLI@2
