@@ -62,9 +62,16 @@ stages:
                 
             # Save the .terraform directory and terraform.lock file
             - task: PublishPipelineArtifact@1
+              displayName: "Save Terraform state File"
               inputs:
                 targetPath: "$(Build.SourcesDirectory)/.terraform"
                 artifact: "terraform_state"
+            
+            - task: PublishPipelineArtifact@1
+              displayName: "Save Terraform Lock File"
+              inputs:
+                targetPath: "$(Build.SourcesDirectory)/terraform.lock.hcl"
+                artifact: "terraform_lock"
 
 
     - stage: Terraform_Plan
