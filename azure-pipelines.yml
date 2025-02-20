@@ -64,6 +64,7 @@ stages:
     - stage: Terraform_Plan
       displayName: "Terraform Plan"
       dependsOn: Terraform_Init
+      condition: succeeded()
       jobs:
         - job: PlanTerraform
           steps:
