@@ -40,7 +40,7 @@ stages:
                 allowTelemetryCollection: true
 
 
-    - stage: Terraform_Init_and_Plan
+    - stage: Terraform_Init
       displayName: "Terraform Init"
       jobs:
         - job: InitTerraform
@@ -59,10 +59,35 @@ stages:
                 backendAzureRmContainerName: 'mybackendsgcontainer1'
                 backendAzureRmKey: 'backend_terraform.tfstate'
                 allowTelemetryCollection: true
+                
+            # Save the .terraform directory and terraform.lock file
+            # - task: PublishPipelineArtifact@1
+            #   displayName: "Save Terraform Lock File"
+            #   inputs:
+            #     targetPath: "$(Build.SourcesDirectory)/.terraform"
+            #     artifact: "terraform_state"
+            
+            # - task: PublishPipelineArtifact@1
+            #   displayName: "Save Terraform Lock File"
+            #   inputs:
+            #     targetPath: "$(Build.SourcesDirectory)/terraform.lock.hcl"
+            #     artifact: "terraform_lock"
 
+
+    - stage: Terraform_Plan
+      displayName: "Terraform Plan"
+      dependsOn: Terraform_Init
+      condition: succeeded()
+      jobs:
         - job: PlanTerraform
-          dependsOn: InitTerraform
           steps:
+          
+              # Restore the .terraform directory from the artifact
+          # - task: DownloadPipelineArtifact@2
+          #   inputs:
+          #     artifact: "terraform_state"
+          #     path: "$(Build.SourcesDirectory)/.terraform"
+
           - task: TerraformCLI@2
             name: Plan
             inputs:
@@ -71,9 +96,15 @@ stages:
               commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
               allowTelemetryCollection: true
 
+          - task: PublishPipelineArtifact@1
+            displayName: "Save Terraform Plan"
+            inputs:
+              targetPath: "tfplan"
+              artifact: "terraform_plan"
+
     - stage: Terraform_Apply
       displayName: "Terraform Apply"
-      dependsOn: Terraform_Init_and_Plan
+      dependsOn: Terraform_Plan
       condition: succeeded()  # Runs only if the plan stage succeeds
       jobs:
         - deployment: ApplyTerraform
@@ -82,12 +113,19 @@ stages:
               runOnce:
                 deploy:
                   steps:
+                    - task: DownloadPipelineArtifact@2
+                      displayName: "Download Terraform Plan"
+                      inputs:
+                        artifact: "terraform_plan"
+                        path: "$(Build.SourcesDirectory)"
+
                     - task: TerraformCLI@2
                       name: apply
                       inputs:
                         command: 'apply'
                         environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
                         commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                        commandOptions: 'tfplan'
                         allowTelemetryCollection: true
 
     # - stage: Terraform_Destroy
