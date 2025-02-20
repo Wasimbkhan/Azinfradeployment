@@ -59,6 +59,12 @@ stages:
                 backendAzureRmContainerName: 'mybackendsgcontainer1'
                 backendAzureRmKey: 'backend_terraform.tfstate'
                 allowTelemetryCollection: true
+                
+            # Save the .terraform directory and terraform.lock file
+            - task: PublishPipelineArtifact@1
+              inputs:
+                targetPath: "$(Build.SourcesDirectory)/.terraform"
+                artifact: "terraform_state"
 
 
     - stage: Terraform_Plan
@@ -68,13 +74,20 @@ stages:
       jobs:
         - job: PlanTerraform
           steps:
-            - task: TerraformCLI@2
-              name: Plan
-              inputs:
-                command: 'plan'
-                environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-                allowTelemetryCollection: true
+          
+              # Restore the .terraform directory from the artifact
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifact: "terraform_state"
+              path: "$(Build.SourcesDirectory)/.terraform"
+
+          - task: TerraformCLI@2
+            name: Plan
+            inputs:
+              command: 'plan'
+              environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+              commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+              allowTelemetryCollection: true
 
     - stage: Terraform_Apply
       displayName: "Terraform Apply"
