@@ -40,7 +40,7 @@ stages:
                 allowTelemetryCollection: true
 
 
-    - stage: Terraform_Init_&_Plan
+    - stage: Terraform_Init_and_Plan
       displayName: "Terraform Init"
       jobs:
         - job: InitTerraform
@@ -73,7 +73,7 @@ stages:
 
     - stage: Terraform_Apply
       displayName: "Terraform Apply"
-      dependsOn: Terraform_Init
+      dependsOn: Terraform_Init_and_Plan
       condition: succeeded()  # Runs only if the plan stage succeeds
       jobs:
         - deployment: ApplyTerraform
