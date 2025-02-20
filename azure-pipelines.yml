@@ -9,63 +9,110 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo My Azure infra deployment pipeline
-  displayName: 'Run a one-line script'
+stages:
+    - stage: Script
+      displayName: "Welcome msg"
+      jobs:
+        - job: Welcome_msg
+          steps:
+            - script: echo My Azure infra deployment pipeline
+              displayName: 'Run a one-line script'
 
-- task: DownloadSecureFile@1
-  name: publickey
-  inputs:
-    secureFile: 'azadm_rsa.pub'
+    - stage: Download_secure_file
+      displayName: "Download_secure_file"
+      jobs:
+        - job: Download_secure_file
+          steps:
+            - task: DownloadSecureFile@1
+              name: publickey
+              inputs:
+                secureFile: 'azadm_rsa.pub'
 
-- task: TerraformCLI@2
-  name: version
-  inputs:
-    command: 'version'
-    allowTelemetryCollection: true
-
-- task: TerraformCLI@2
-  name: Init
-  inputs:
-    command: 'init'
-    #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-    backendType: 'azurerm'
-    backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-    ensureBackend: true
-    backendAzureRmResourceGroupName: 'rgtfstatebackend'
-    backendAzureRmResourceGroupLocation: 'East US'
-    backendAzureRmStorageAccountName: 'mybackendsg1'
-    backendAzureRmContainerName: 'mybackendsgcontainer1'
-    backendAzureRmKey: 'backend_terraform.tfstate'
-    allowTelemetryCollection: true
-
-- task: TerraformCLI@2
-  name: Plan
-  inputs:
-    command: 'plan'
-    environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-    allowTelemetryCollection: true
-
-- task: TerraformCLI@2
-  name: apply
-  inputs:
-    command: 'apply'
-    environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-    allowTelemetryCollection: true
-
-- task: TerraformCLI@2
-  name: Destroy
-  inputs:
-    command: 'destroy'
-    environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-    allowTelemetryCollection: true
+    - stage: Terraform_Version
+      displayName: "Terraform Version Check"
+      jobs:
+        - job: CheckVersion
+          steps:
+            - task: TerraformCLI@2
+              name: version
+              inputs:
+                command: 'version'
+                allowTelemetryCollection: true
 
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    - stage: Terraform_Init
+      displayName: "Terraform Init"
+      jobs:
+        - job: InitTerraform
+          steps:
+            - task: TerraformCLI@2
+              name: Init
+              inputs:
+                command: 'init'
+                #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                backendType: 'azurerm'
+                backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                ensureBackend: true
+                backendAzureRmResourceGroupName: 'rgtfstatebackend'
+                backendAzureRmResourceGroupLocation: 'East US'
+                backendAzureRmStorageAccountName: 'mybackendsg1'
+                backendAzureRmContainerName: 'mybackendsgcontainer1'
+                backendAzureRmKey: 'backend_terraform.tfstate'
+                allowTelemetryCollection: true
+
+
+    - stage: Terraform_Plan
+      displayName: "Terraform Plan"
+      dependsOn: Terraform_Init
+      jobs:
+        - job: PlanTerraform
+          steps:
+            - task: TerraformCLI@2
+              name: Plan
+              inputs:
+                command: 'plan'
+                environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                allowTelemetryCollection: true
+
+    - stage: Terraform_Apply
+      displayName: "Terraform Apply"
+      dependsOn: Terraform_Plan
+      condition: succeeded()  # Runs only if the plan stage succeeds
+      jobs:
+        - job: ApplyTerraform
+          steps:
+            - task: TerraformCLI@2
+              name: apply
+              inputs:
+                command: 'apply'
+                environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                allowTelemetryCollection: true
+
+    # - stage: Terraform_Destroy
+    #   displayName: "Terraform Destroy"
+    #   dependsOn: Terraform_Apply
+    #   condition: always()  # Ensures destroy runs regardless of success/failure
+    #   jobs:
+    #     - job: DestroyTerraform
+    #       steps:
+    #         - task: TerraformCLI@2
+    #           name: Destroy
+    #           inputs:
+    #             command: 'destroy'
+    #             environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+    #             commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+    #             allowTelemetryCollection: true
+
+    - stage: complete_msg
+      displayName: "Run a multi-line script"
+      dependsOn: Terraform_Apply
+      jobs:
+        - job: Complete_msg
+          steps:
+            - script: |
+                echo Add other tasks to build, test, and deploy your project.
+                echo See https://aka.ms/yaml
+              displayName: 'Run a multi-line script'
 
