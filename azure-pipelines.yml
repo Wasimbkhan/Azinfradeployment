@@ -20,16 +20,16 @@ stages:
               inputs:
                 secureFile: 'azadm_rsa.pub'
 
-    - stage: Terraform_Version
-      displayName: "Terraform Version Check"
-      jobs:
-        - job: CheckVersion
-          steps:
-            - task: TerraformCLI@2
-              name: version
-              inputs:
-                command: 'version'
-                allowTelemetryCollection: true
+    # - stage: Terraform_Version
+    #   displayName: "Terraform Version Check"
+    #   jobs:
+    #     - job: CheckVersion
+    #       steps:
+    #         - task: TerraformCLI@2
+    #           name: version
+    #           inputs:
+    #             command: 'version'
+    #             allowTelemetryCollection: true
 
 
 
