@@ -10,14 +10,6 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-    - stage: Script
-      displayName: "Welcome msg"
-      jobs:
-        - job: Welcome_msg
-          steps:
-            - script: echo My Azure infra deployment pipeline
-              displayName: 'Run a one-line script'
-
     - stage: Download_secure_file
       displayName: "Download_secure_file"
       jobs:
@@ -40,26 +32,7 @@ stages:
                 allowTelemetryCollection: true
 
 
-    - stage: Terraform_Init
-      displayName: "Terraform Init"
-      jobs:
-        - job: InitTerraform
-          steps:
-            - task: TerraformCLI@2
-              name: Init
-              inputs:
-                command: 'init'
-                #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-                backendType: 'azurerm'
-                backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                ensureBackend: true
-                backendAzureRmResourceGroupName: 'rgtfstatebackend'
-                backendAzureRmResourceGroupLocation: 'East US'
-                backendAzureRmStorageAccountName: 'mybackendsg1'
-                backendAzureRmContainerName: 'mybackendsgcontainer1'
-                backendAzureRmKey: 'backend_terraform.tfstate'
-                allowTelemetryCollection: true
-                
+
             # Save the .terraform directory and terraform.lock file
             # - task: PublishPipelineArtifact@1
             #   displayName: "Save Terraform Lock File"
@@ -81,26 +54,34 @@ stages:
       jobs:
         - job: PlanTerraform
           steps:
-          
+            - task: TerraformCLI@2
+              name: Init
+              inputs:
+                command: 'init'
+                #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                backendType: 'azurerm'
+                backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                ensureBackend: true
+                backendAzureRmResourceGroupName: 'rgtfstatebackend'
+                backendAzureRmResourceGroupLocation: 'East US'
+                backendAzureRmStorageAccountName: 'mybackendsg1'
+                backendAzureRmContainerName: 'mybackendsgcontainer1'
+                backendAzureRmKey: 'backend_terraform.tfstate'
+                allowTelemetryCollection: true
               # Restore the .terraform directory from the artifact
           # - task: DownloadPipelineArtifact@2
           #   inputs:
           #     artifact: "terraform_state"
           #     path: "$(Build.SourcesDirectory)/.terraform"
 
-          - task: TerraformCLI@2
-            name: Plan
-            inputs:
-              command: 'plan'
-              environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-              commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-              allowTelemetryCollection: true
+            - task: TerraformCLI@2
+              name: Plan
+              inputs:
+                command: 'plan'
+                environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                allowTelemetryCollection: true
 
-          - task: PublishPipelineArtifact@1
-            displayName: "Save Terraform Plan"
-            inputs:
-              targetPath: "tfplan"
-              artifact: "terraform_plan"
 
     - stage: Terraform_Apply
       displayName: "Terraform Apply"
@@ -118,6 +99,22 @@ stages:
                       inputs:
                         artifact: "terraform_plan"
                         path: "$(Build.SourcesDirectory)"
+                    
+
+                    - task: TerraformCLI@2
+                      name: Init
+                      inputs:
+                        command: 'init'
+                        #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                        backendType: 'azurerm'
+                        backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                        ensureBackend: true
+                        backendAzureRmResourceGroupName: 'rgtfstatebackend'
+                        backendAzureRmResourceGroupLocation: 'East US'
+                        backendAzureRmStorageAccountName: 'mybackendsg1'
+                        backendAzureRmContainerName: 'mybackendsgcontainer1'
+                        backendAzureRmKey: 'backend_terraform.tfstate'
+                        allowTelemetryCollection: true
 
                     - task: TerraformCLI@2
                       name: apply
