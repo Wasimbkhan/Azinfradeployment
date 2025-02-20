@@ -84,7 +84,7 @@ stages:
             - task: PublishPipelineArtifact@1
               displayName: "Save Terraform Plan"
               inputs:
-                targetPath: "$(System.DefaultWorkingDirectory)/tfplan"
+                targetPath: "$(Build.SourcesDirectory)/tfplan"
                 artifact: "terraform_plan"
 
 
