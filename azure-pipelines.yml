@@ -84,7 +84,7 @@ stages:
             - task: PublishPipelineArtifact@1
               displayName: "Save Terraform Plan"
               inputs:
-                targetPath: "tfplan"
+                targetPath: "$(Build.SourcesDirectory)/.tfplan"
                 artifact: "terraform_plan"
 
 
@@ -103,7 +103,7 @@ stages:
                       displayName: "Download Terraform Plan"
                       inputs:
                         artifact: "terraform_plan"
-                        path: "$(Build.SourcesDirectory)"
+                        path: "$(Build.SourcesDirectory)/.tfplan"
                     
 
                     - task: TerraformCLI@2
