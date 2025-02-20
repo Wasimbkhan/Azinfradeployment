@@ -40,7 +40,7 @@ stages:
                 allowTelemetryCollection: true
 
 
-    - stage: Terraform_Init
+    - stage: Terraform_Init_&_Plan
       displayName: "Terraform Init"
       jobs:
         - job: InitTerraform
@@ -61,6 +61,7 @@ stages:
                 allowTelemetryCollection: true
 
         - job: PlanTerraform
+          dependsOn: InitTerraform
           steps:
           - task: TerraformCLI@2
             name: Plan
