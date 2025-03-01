@@ -130,20 +130,13 @@ inputs:
   commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) $(System.DefaultWorkingDirectory)/tfplan'
   allowTelemetryCollection: true
 
-    # - stage: Terraform_Destroy
-    #   displayName: "Terraform Destroy"
-    #   dependsOn: Terraform_Apply
-    #   condition: always()  # Ensures destroy runs regardless of success/failure
-    #   jobs:
-    #     - job: DestroyTerraform
-    #       steps:
-    #         - task: TerraformCLI@2
-    #           name: Destroy
-    #           inputs:
-    #             command: 'destroy'
-    #             environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-    #             commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-    #             allowTelemetryCollection: true
+#- task: TerraformCLI@2
+#  name: Destroy
+#  inputs:
+#    command: 'destroy'
+#    environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+#    commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+#    allowTelemetryCollection: true
 
     # - stage: complete_msg
     #   displayName: "Run a multi-line script"
