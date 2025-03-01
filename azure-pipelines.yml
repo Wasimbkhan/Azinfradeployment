@@ -9,22 +9,22 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-stages:
-    - stage: Download_secure_file
-      displayName: "Download_secure_file"
-      jobs:
-        - job: Download_secure_file
-          steps:
+# stages:
+#     - stage: Download_secure_file
+#       displayName: "Download_secure_file"
+#       jobs:
+#         - job: Download_secure_file
+  steps:
             - task: DownloadSecureFile@1
               name: publickey
               inputs:
                 secureFile: 'azadm_rsa.pub'
 
-    - stage: Terraform_Version
-      displayName: "Terraform Version Check"
-      jobs:
-        - job: CheckVersion
-          steps:
+    # - stage: Terraform_Version
+    #   displayName: "Terraform Version Check"
+    #   jobs:
+    #     - job: CheckVersion
+    #       steps:
             - task: TerraformCLI@2
               name: version
               inputs:
@@ -47,12 +47,12 @@ stages:
             #     artifact: "terraform_lock"
 
 
-    - stage: Terraform_Plan
-      displayName: "Terraform Plan"
-      condition: succeeded()
-      jobs:
-        - job: PlanTerraform
-          steps:
+    # - stage: Terraform_Plan
+    #   displayName: "Terraform Plan"
+    #   condition: succeeded()
+    #   jobs:
+    #     - job: PlanTerraform
+    #       steps:
             - task: TerraformCLI@2
               name: Init
               inputs:
@@ -80,55 +80,55 @@ stages:
                 environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
                 commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
                 allowTelemetryCollection: true
-                publishPlanResults: "tfplan"
+                # publishPlanResults: "tfplan"
 
-            - task: PublishPipelineArtifact@1
-              displayName: "Save Terraform Plan"
-              inputs:
-                targetPath: "$(System.DefaultWorkingDirectory)/tfplan"
-                artifact: "terraform_plan"
+            # - task: PublishPipelineArtifact@1
+            #   displayName: "Save Terraform Plan"
+            #   inputs:
+            #     targetPath: "$(System.DefaultWorkingDirectory)/tfplan"
+            #     artifact: "terraform_plan"
 
 
-    - stage: Terraform_Apply
-      displayName: "Terraform Apply"
-      dependsOn: Terraform_Plan
-      condition: succeeded()  # Runs only if the plan stage succeeds
-      jobs:
-        - deployment: ApplyTerraform
-          environment: "Production"  # Approval applies only to this stage
-          strategy:
-              runOnce:
-                deploy:
-                  steps:
-                    - task: DownloadPipelineArtifact@2
-                      displayName: "Download Terraform Plan"
-                      inputs:
-                        artifact: "terraform_plan"
-                        path: "$(System.DefaultWorkingDirectory)"
+    # - stage: Terraform_Apply
+    #   displayName: "Terraform Apply"
+    #   dependsOn: Terraform_Plan
+    #   condition: succeeded()  # Runs only if the plan stage succeeds
+    #   jobs:
+    #     - deployment: ApplyTerraform
+    #       environment: "Production"  # Approval applies only to this stage
+    #       strategy:
+    #           runOnce:
+    #             deploy:
+    #               steps:
+                    # - task: DownloadPipelineArtifact@2
+                    #   displayName: "Download Terraform Plan"
+                    #   inputs:
+                    #     artifact: "terraform_plan"
+                    #     path: "$(System.DefaultWorkingDirectory)"
                     
 
-                    - task: TerraformCLI@2
-                      name: Init
-                      inputs:
-                        command: 'init'
-                        commandOptions: '-upgrade'
-                        backendType: 'azurerm'
-                        backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                        ensureBackend: true
-                        backendAzureRmResourceGroupName: 'rgtfstatebackend'
-                        backendAzureRmResourceGroupLocation: 'East US'
-                        backendAzureRmStorageAccountName: 'mybackendsg1'
-                        backendAzureRmContainerName: 'mybackendsgcontainer1'
-                        backendAzureRmKey: 'backend_terraform.tfstate'
-                        allowTelemetryCollection: true
+                  #  - task: TerraformCLI@2
+                  #     name: Init
+                  #     inputs:
+                  #       command: 'init'
+                  #       commandOptions: '-upgrade'
+                  #       backendType: 'azurerm'
+                  #       backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                  #       ensureBackend: true
+                  #       backendAzureRmResourceGroupName: 'rgtfstatebackend'
+                  #       backendAzureRmResourceGroupLocation: 'East US'
+                  #       backendAzureRmStorageAccountName: 'mybackendsg1'
+                  #       backendAzureRmContainerName: 'mybackendsgcontainer1'
+                  #       backendAzureRmKey: 'backend_terraform.tfstate'
+                  #       allowTelemetryCollection: true
 
-                    - task: TerraformCLI@2
-                      name: apply
-                      inputs:
-                        command: 'apply'
-                        environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                        commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) $(System.DefaultWorkingDirectory)/tfplan'
-                        allowTelemetryCollection: true
+            - task: TerraformCLI@2
+              name: apply
+              inputs:
+                command: 'apply'
+                environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) $(System.DefaultWorkingDirectory)/tfplan'
+                allowTelemetryCollection: true
 
     # - stage: Terraform_Destroy
     #   displayName: "Terraform Destroy"
@@ -145,12 +145,12 @@ stages:
     #             commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
     #             allowTelemetryCollection: true
 
-    - stage: complete_msg
-      displayName: "Run a multi-line script"
-      dependsOn: Terraform_Apply
-      jobs:
-        - job: Complete_msg
-          steps:
+    # - stage: complete_msg
+    #   displayName: "Run a multi-line script"
+    #   dependsOn: Terraform_Apply
+    #   jobs:
+    #     - job: Complete_msg
+    #       steps:
             - script: |
                 echo Add other tasks to build, test, and deploy your project.
                 echo See https://aka.ms/yaml
