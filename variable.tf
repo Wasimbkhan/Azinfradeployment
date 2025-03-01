@@ -9,3 +9,11 @@ variable "password" {
 variable "sshkey" {
   
 }
+
+variable "vm_data" {
+  type = list(object({
+    name     = string
+    vm_size  = string
+    location = string
+  }))
+}

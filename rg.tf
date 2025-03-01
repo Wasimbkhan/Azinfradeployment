@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "rgpne" {
+resource "azurerm_resource_group" "rgone" {
   name = "rgone"
   location = "eastus"
 }
