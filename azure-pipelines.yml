@@ -20,16 +20,16 @@ stages:
               inputs:
                 secureFile: 'azadm_rsa.pub'
 
-    # - stage: Terraform_Version
-    #   displayName: "Terraform Version Check"
-    #   jobs:
-    #     - job: CheckVersion
-    #       steps:
-    #         - task: TerraformCLI@2
-    #           name: version
-    #           inputs:
-    #             command: 'version'
-    #             allowTelemetryCollection: true
+    - stage: Terraform_Version
+      displayName: "Terraform Version Check"
+      jobs:
+        - job: CheckVersion
+          steps:
+            - task: TerraformCLI@2
+              name: version
+              inputs:
+                command: 'version'
+                allowTelemetryCollection: true
 
 
 
@@ -80,6 +80,7 @@ stages:
                 environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
                 commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
                 allowTelemetryCollection: true
+                publishPlanResults: "tfplan"
 
             - task: PublishPipelineArtifact@1
               displayName: "Save Terraform Plan"
@@ -93,6 +94,7 @@ stages:
       dependsOn: Terraform_Plan
       condition: succeeded()  # Runs only if the plan stage succeeds
       jobs:
+        job:
         - deployment: ApplyTerraform
           environment: "Production"  # Approval applies only to this stage
           strategy:
