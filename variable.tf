@@ -17,3 +17,7 @@ variable "vm_data" {
     location = string
   }))
 }
+
+locals {
+  vm_data = csvdecode(file("vm_list.csv"))
+}
