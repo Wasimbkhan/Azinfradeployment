@@ -1,1 +1,3 @@
-vm_data = csvdecode(file("vm_list.csv"))
+locals {
+  vm_data = csvdecode(file("vm_list.csv"))
+}
