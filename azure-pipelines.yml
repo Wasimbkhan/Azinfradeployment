@@ -20,16 +20,16 @@ stages:
               inputs:
                 secureFile: 'azadm_rsa.pub'
 
-    - stage: Terraform_Version
-      displayName: "Terraform Version Check"
-      jobs:
-        - job: CheckVersion
-          steps:
-            - task: TerraformCLI@2
-              name: version
-              inputs:
-                command: 'version'
-                allowTelemetryCollection: true
+    # - stage: Terraform_Version
+    #   displayName: "Terraform Version Check"
+    #   jobs:
+    #     - job: CheckVersion
+    #       steps:
+    #         - task: TerraformCLI@2
+    #           name: version
+    #           inputs:
+    #             command: 'version'
+    #             allowTelemetryCollection: true
 
 
 
@@ -78,13 +78,13 @@ stages:
               inputs:
                 command: 'plan'
                 environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
                 allowTelemetryCollection: true
 
             - task: PublishPipelineArtifact@1
               displayName: "Save Terraform Plan"
               inputs:
-                targetPath: "$(System.DefaultWorkingDirectory)/.tfplan"
+                targetPath: "$(System.DefaultWorkingDirectory)/tfplan"
                 artifact: "terraform_plan"
 
 
@@ -103,14 +103,14 @@ stages:
                       displayName: "Download Terraform Plan"
                       inputs:
                         artifact: "terraform_plan"
-                        path: "$(Build.SourcesDirectory)/.tfplan"
+                        path: "$(System.DefaultWorkingDirectory)"
                     
 
                     - task: TerraformCLI@2
                       name: Init
                       inputs:
                         command: 'init'
-                        #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+                        commandOptions: '-upgrade'
                         backendType: 'azurerm'
                         backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
                         ensureBackend: true
@@ -126,7 +126,7 @@ stages:
                       inputs:
                         command: 'apply'
                         environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-                        commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -var tfplan=$(tfplan)'
+                        commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) $(System.DefaultWorkingDirectory)/tfplan'
                         allowTelemetryCollection: true
 
     # - stage: Terraform_Destroy
