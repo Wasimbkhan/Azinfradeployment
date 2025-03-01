@@ -94,7 +94,6 @@ stages:
       dependsOn: Terraform_Plan
       condition: succeeded()  # Runs only if the plan stage succeeds
       jobs:
-        job:
         - deployment: ApplyTerraform
           environment: "Production"  # Approval applies only to this stage
           strategy:
