@@ -5,7 +5,7 @@ resource "azurerm_virtual_machine" "example" {
   name                 = each.value.name
   location             = each.value.location
   resource_group_name  = azurerm_resource_group.rgone.name
-  network_interface_ids = [azurerm_network_interface.example[each.key].id]
+  network_interface_ids = [azurerm_network_interface.nic[each.key].id]
   vm_size              = each.value.vm_size
 
   storage_os_disk {
