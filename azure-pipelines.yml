@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-# stages:
+stages:
 #     - stage: Download_secure_file
 #       displayName: "Download_secure_file"
 #       jobs:
