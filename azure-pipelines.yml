@@ -80,7 +80,7 @@ steps:
         environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
         commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
         allowTelemetryCollection: true
-        publishPlanResults: "tfplan"
+        #publishPlanResults: "tfplan"
 
             # - task: PublishPipelineArtifact@1
             #   displayName: "Save Terraform Plan"
