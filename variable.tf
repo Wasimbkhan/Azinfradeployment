@@ -16,8 +16,11 @@ variable "vm_data" {
     vm_size  = string
     location = string
   }))
+  default = []
 
-  
 }
 
+locals {
+  vm_data = csvdecode(file("vm_list.csv"))
+}
 

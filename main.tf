@@ -1,9 +1,7 @@
-locals {
-  vm_data = csvdecode(file("vm_list.csv"))
-}
+
 
 resource "azurerm_virtual_machine" "example" {
-  for_each             = { for idx, vm in var.vm_data : vm.name => vm }
+  for_each             = { for idx, vm in local.vm_data : vm.name => vm }
   name                 = each.value.name
   location             = each.value.location
   resource_group_name  = azurerm_resource_group.rgone.name
