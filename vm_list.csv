@@ -1,4 +1,4 @@
 name,vm_size,location
-wasimvm-1,Standard_DS1_v2,East US
-wasimvm-2,Standard_B2s,West US
-wasimvm-3,Standard_D2s_v3,East US
+wasimvm-1,Standard_DS1_v2,eastus
+wasimvm-2,Standard_B2s,eastus
+wasimvm-3,Standard_D2s_v3,eastus

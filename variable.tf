@@ -16,6 +16,8 @@ variable "vm_data" {
     vm_size  = string
     location = string
   }))
+
+  
 }
 
 
