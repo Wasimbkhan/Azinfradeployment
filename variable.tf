@@ -18,6 +18,4 @@ variable "vm_data" {
   }))
 }
 
-locals {
-  vm_data = csvdecode(file("vm_list.csv"))
-}
+
