@@ -15,7 +15,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  for_each = { for idx, vm in local.vm_data : idx => vm }
+  for_each = { for idx, vm in local.vm_data : vm.name => vm }
 
   name                = "${each.value.name}-nic"
   location            = each.value.location
