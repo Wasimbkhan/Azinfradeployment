@@ -14,22 +14,22 @@ pool:
 #       displayName: "Download_secure_file"
 #       jobs:
 #         - job: Download_secure_file
-#           steps:
--task: DownloadSecureFile@1
-name: publickey
-inputs:
-  secureFile: 'azadm_rsa.pub'
+steps:
+    - task: DownloadSecureFile@1
+      name: publickey
+      inputs:
+        secureFile: 'azadm_rsa.pub'
 
     # - stage: Terraform_Version
     #   displayName: "Terraform Version Check"
     #   jobs:
     #     - job: CheckVersion
   #       steps:
-task: TerraformCLI@2
-name: version
-inputs:
-  command: 'version'
-  allowTelemetryCollection: true
+    - task: TerraformCLI@2
+      name: version
+      inputs:
+        command: 'version'
+        allowTelemetryCollection: true
 
 
 
@@ -53,34 +53,34 @@ inputs:
     #   jobs:
     #     - job: PlanTerraform
     #       steps:
-task: TerraformCLI@2
-name: Init
-inputs:
-  command: 'init'
-  #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
-  backendType: 'azurerm'
-  backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-  ensureBackend: true
-  backendAzureRmResourceGroupName: 'rgtfstatebackend'
-  backendAzureRmResourceGroupLocation: 'East US'
-  backendAzureRmStorageAccountName: 'mybackendsg1'
-  backendAzureRmContainerName: 'mybackendsgcontainer1'
-  backendAzureRmKey: 'backend_terraform.tfstate'
-  allowTelemetryCollection: true
+    - task: TerraformCLI@2
+      name: Init
+      inputs:
+        command: 'init'
+        #commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
+        backendType: 'azurerm'
+        backendServiceArm: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+        ensureBackend: true
+        backendAzureRmResourceGroupName: 'rgtfstatebackend'
+        backendAzureRmResourceGroupLocation: 'East US'
+        backendAzureRmStorageAccountName: 'mybackendsg1'
+        backendAzureRmContainerName: 'mybackendsgcontainer1'
+        backendAzureRmKey: 'backend_terraform.tfstate'
+        allowTelemetryCollection: true
               # Restore the .terraform directory from the artifact
           # - task: DownloadPipelineArtifact@2
           #   inputs:
           #     artifact: "terraform_state"
           #     path: "$(Build.SourcesDirectory)/.terraform"
 
-task: TerraformCLI@2
-name: Plan
-inputs:
-  command: 'plan'
-  environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-  commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
-  allowTelemetryCollection: true
-  publishPlanResults: "tfplan"
+    - task: TerraformCLI@2
+      name: Plan
+      inputs:
+        command: 'plan'
+        environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+        commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) -out=$(System.DefaultWorkingDirectory)/tfplan'
+        allowTelemetryCollection: true
+        publishPlanResults: "tfplan"
 
             # - task: PublishPipelineArtifact@1
             #   displayName: "Save Terraform Plan"
@@ -122,13 +122,13 @@ inputs:
                   #       backendAzureRmKey: 'backend_terraform.tfstate'
                   #       allowTelemetryCollection: true
 
-task: TerraformCLI@2
-name: apply
-inputs:
-  command: 'apply'
-  environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
-  commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) $(System.DefaultWorkingDirectory)/tfplan'
-  allowTelemetryCollection: true
+    - task: TerraformCLI@2
+      name: apply
+      inputs:
+        command: 'apply'
+        environmentServiceName: 'Pay-As-You-Go(51f12368-372d-48c6-8e3c-02c940c4a791)'
+        commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath) $(System.DefaultWorkingDirectory)/tfplan'
+        allowTelemetryCollection: true
 
 #- task: TerraformCLI@2
 #  name: Destroy
@@ -144,8 +144,8 @@ inputs:
     #   jobs:
     #     - job: Complete_msg
     #       steps:
-script: |
-  echo Add other tasks to build, test, and deploy your project.
-  echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+# script: |
+#   echo Add other tasks to build, test, and deploy your project.
+#   echo See https://aka.ms/yaml
+#   displayName: 'Run a multi-line script'
 
