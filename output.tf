@@ -13,3 +13,5 @@ output "vm_public_ips" {
 output "vm_details" {
   value = azurerm_virtual_machine.vm
 }
+
+
