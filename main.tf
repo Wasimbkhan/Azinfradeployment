@@ -32,3 +32,14 @@ resource "azurerm_virtual_machine" "example" {
     disable_password_authentication = false
   }
 }
+
+
+resource "local_file" "vm_output_csv" {
+  filename = "${path.module}/vm_output.csv"
+  content  = <<EOT
+VM Name,Private IP,Public IP
+%{for k, vm in azurerm_virtual_machine.vm}
+${vm.name},${azurerm_network_interface.nic[k].private_ip_address},${lookup(azurerm_public_ip.vm_pip, k, "N/A")}
+%{endfor}
+EOT
+}
