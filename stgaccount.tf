@@ -1,6 +1,6 @@
 
 resource "azurerm_storage_account" "wasim_stg" {
-  name                     = "wasim_stg"
+  name                     = "wasimstg"
   resource_group_name      = azurerm_resource_group.rgone.name
   location                 = azurerm_resource_group.rgone.location
   account_tier             = "Standard"
