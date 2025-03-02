@@ -130,6 +130,7 @@ steps:
         commandOptions: '-var appid=$(appid) -var password=$(password) -var sshkey=(publickey.secureFilePath)'
         allowTelemetryCollection: true
 
+
 #- task: TerraformCLI@2
 #  name: Destroy
 #  inputs:
