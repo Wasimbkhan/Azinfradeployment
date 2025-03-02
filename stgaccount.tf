@@ -10,7 +10,7 @@ resource "azurerm_storage_account" "wasim_stg" {
 
 resource "azurerm_storage_container" "wasim_cont" {
   name                  = "vhds"
-  storage_account_id    = azurerm_storage_account.wasim_stg.name
+  storage_account_id    = azurerm_storage_account.wasim_stg.id
   container_access_type = "private"
 }
 
