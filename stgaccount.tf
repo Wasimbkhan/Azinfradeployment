@@ -19,5 +19,5 @@ resource "azurerm_storage_blob" "vm_output_blob" {
   storage_account_name   = azurerm_storage_account.wasim_stg.name
   storage_container_name = azurerm_storage_container.wasim_cont.name
   type                   = "Block"
-  source                 = "/home/vsts/work/1/vm_output.csv"
+  source                 = "${Build.ArtifactStagingDirectory}/vm_output.csv"
 }

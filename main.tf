@@ -34,14 +34,14 @@ resource "azurerm_virtual_machine" "example" {
 }
 
 
-# resource "local_file" "vm_output_csv" {
-#   filename = "${Build.ArtifactStagingDirectory}/vm_output.csv"
-#   content  = <<EOT
-# VM Name,Private IP,Public IP
-# %{for idx, vm in azurerm_virtual_machine.example}
-# ${vm.name},${azurerm_network_interface.nic[idx].private_ip_address}}
-# %{endfor}
-# EOT
-# }
+resource "local_file" "vm_output_csv" {
+  filename = "${Build.ArtifactStagingDirectory}/vm_output.csv"
+  content  = <<EOT
+VM Name,Private IP,Public IP
+%{for idx, vm in azurerm_virtual_machine.example}
+${vm.name},${azurerm_network_interface.nic[idx].private_ip_address}}
+%{endfor}
+EOT
+}
 
 
