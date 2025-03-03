@@ -36,7 +36,7 @@ resource "azurerm_virtual_machine" "example" {
 
 
 resource "local_file" "vm_output_csv" {
-  filename = "${path.module}/vm_output1.csv"
+  filename = "${path.module}/vm_output2.csv"
   content  = <<EOT
 VM Name,Private IP,Public IP
 %{for idx, vm in azurerm_virtual_machine.example}

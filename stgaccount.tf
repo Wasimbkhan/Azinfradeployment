@@ -15,11 +15,11 @@ resource "azurerm_storage_container" "wasim_cont" {
 }
 
 resource "azurerm_storage_blob" "vm_output_blob" {
-  name                   = "vm_output.csv"
+  name                   = "vm_output2.csv"
   storage_account_name   = azurerm_storage_account.wasim_stg.name
   storage_container_name = azurerm_storage_container.wasim_cont.name
   type                   = "Block"
-  source                 = "${path.cwd}/vm_output1.csv"
+  source                 = "${path.cwd}/vm_output2.csv"
 
   depends_on = [local_file.vm_output_csv]
 
