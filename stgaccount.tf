@@ -20,4 +20,7 @@ resource "azurerm_storage_blob" "vm_output_blob" {
   storage_container_name = azurerm_storage_container.wasim_cont.name
   type                   = "Block"
   source                 = "${path.module}/vm_output1.csv"
+
+  depends_on = ["${path.module}/vm_output1.csv"] 
+
 }
