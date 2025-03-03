@@ -21,6 +21,6 @@ resource "azurerm_storage_blob" "vm_output_blob" {
   type                   = "Block"
   source                 = "${path.cwd}/vm_output1.csv"
 
-  depends_on = [local_file.vm_output1]
+  depends_on = [local_file.vm_output_csv]
 
 }
