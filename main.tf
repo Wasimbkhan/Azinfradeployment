@@ -7,6 +7,7 @@ resource "azurerm_virtual_machine" "example" {
   resource_group_name  = azurerm_resource_group.rgone.name
   network_interface_ids = [azurerm_network_interface.nic[each.key].id]
   vm_size              = each.value.vm_size
+  
 
   storage_os_disk {
     name              = "osdisk-${each.key}"

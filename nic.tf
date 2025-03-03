@@ -25,5 +25,14 @@ resource "azurerm_network_interface" "nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.myvm_pip.id
   }
+}
+
+resource "azurerm_public_ip" "myvm_pip" {
+  for_each = {for idx, vm in localocal.vm_data : vm.name => vm } 
+  name = "${each.value.name}-pip"
+  location = each.value.location
+  resource_group_name = azurerm_resource_group.rgone.name
+  allocation_method = "Dynamic"
 }
