@@ -40,7 +40,7 @@ resource "local_file" "vm_output_csv" {
   content  = <<EOT
 VM Name,Private IP,Public IP
 %{for idx, vm in azurerm_virtual_machine.example}
-${vm.name},${azurerm_network_interface.nic[idx].private_ip_address}
+${vm.name},${azurerm_network_interface.nic[idx].private_ip_address},${lookup(azurerm_public_ip.vm_pip, idx, "N/A")}
 %{endfor}
 EOT
 }
