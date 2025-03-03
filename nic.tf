@@ -34,5 +34,6 @@ resource "azurerm_public_ip" "myvm_pip" {
   name = "${each.value.name}-pip"
   location = each.value.location
   resource_group_name = azurerm_resource_group.rgone.name
-  allocation_method = "Dynamic"
+  allocation_method = "Static"
+ 
 }
