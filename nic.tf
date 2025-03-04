@@ -20,6 +20,7 @@ resource "azurerm_network_interface" "nic" {
   name                = "${each.value.name}-nic"
   location            = each.value.location
   resource_group_name = azurerm_resource_group.rgone.name
+  
 
   ip_configuration {
     name                          = "internal"
@@ -37,3 +38,29 @@ resource "azurerm_public_ip" "myvm_pip" {
   allocation_method = "Static"
  
 }
+
+
+resource "azurerm_network_security_group" "mynsg" {
+  name = "mynsg"
+  location = azurerm_resource_group.rgone.location
+  resource_group_name = azurerm_resource_group.rgone.name
+  
+}
+
+resource azurerm_subnet_network_security_group_association "nsgassociation1" {
+    network_security_group_id = azurerm_network_security_group.mynsg.id
+    subnet_id = azurerm_subnet.subnet.id
+
+}
+
+resource "azurerm_network_security_rule" "sshallow" {
+  name = "ssh_allow"
+  priority = 100
+  direction = "inbound"
+  access = "allow"
+  protocol = "tcp"
+  source_port_range = "*"
+  network_security_group_name = azurerm_network_security_group.mynsg.name
+  resource_group_name = azurerm_resource_group.rgone.name
+}
+
