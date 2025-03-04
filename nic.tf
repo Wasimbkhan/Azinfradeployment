@@ -60,6 +60,7 @@ resource "azurerm_network_security_rule" "sshallow" {
   access = "Allow"
   protocol = "Tcp"
   source_port_range = "*"
+  destination_port_range = "22"
   network_security_group_name = azurerm_network_security_group.mynsg.name
   resource_group_name = azurerm_resource_group.rgone.name
 }
