@@ -56,9 +56,9 @@ resource azurerm_subnet_network_security_group_association "nsgassociation1" {
 resource "azurerm_network_security_rule" "sshallow" {
   name = "ssh_allow"
   priority = 100
-  direction = "inbound"
-  access = "allow"
-  protocol = "tcp"
+  direction = "Inbound"
+  access = "Allow"
+  protocol = "Tcp"
   source_port_range = "*"
   network_security_group_name = azurerm_network_security_group.mynsg.name
   resource_group_name = azurerm_resource_group.rgone.name
