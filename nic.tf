@@ -63,5 +63,8 @@ resource "azurerm_network_security_rule" "sshallow" {
   destination_port_range = "22"
   network_security_group_name = azurerm_network_security_group.mynsg.name
   resource_group_name = azurerm_resource_group.rgone.name
+  source_address_prefix = "*"
+  source_address_prefixes = "*"
+  destination_address_prefix = "*"
 }
 
